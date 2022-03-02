@@ -1,0 +1,4 @@
+faker
+mysql.connector
+fastapi
+uvicorn[standard]

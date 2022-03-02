@@ -1,0 +1,60 @@
+version: "3"
+services:
+
+  python3-app:
+    image: python:3.8-alpine3.14
+    tty: true
+    container_name: fastapi-poc-python3-app
+    ports:
+      - "8000:8000"
+    volumes:
+        - ../:/app
+    command:
+          - /bin/sh
+          - -c
+          - |
+              apk add nano build-base
+              cd /app; python3 -m venv env; source ./env/bin/activate
+              pip install -r /app/requirements.txt
+              cd /app/code; uvicorn fastapi-server:app --host 0.0.0.0 --port 8000 --reload
+              sh
+  db:
+    image: mysql:5.7.33
+    container_name: fastapi-poc-db
+    restart: always
+    tty: true
+    stdin_open: true
+    ports:
+          - "3306:3306"
+    volumes: 
+          - ../data/mysql:/var/lib/mysql
+          - ../data/db_at.sql:/var/db_at.sql
+    environment:
+          - MYSQL_ROOT_PASSWORD=123123
+          - MYSQL_USER=brunow
+          - MYSQL_PASSWORD=superTest
+          - MYSQL_DATABASE=brunow
+          - MYSQL_PWD=123123
+    command:
+          - /bin/bash
+          - -c
+          - |
+              service mysql start
+              mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123123'; FLUSH PRIVILEGES;"
+              mysql -u root -e 'CREATE DATABASE IF NOT EXISTS brunow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+              mysql -u root brunow < /var/db_at.sql
+              bash
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: fastapi-poc-phpmyadmin
+      restart: always
+      ports:
+          - "8088:80"
+      links:
+          - db
+      expose: ["8088"]
+      depends_on:
+          - db
+      environment:
+        PMA_HOST: db
+        PMA_PORT: 3306
