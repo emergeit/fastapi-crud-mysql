@@ -6,13 +6,13 @@ More at: https://medium.com/@emergeit/database-crud-with-fastapi-keep-it-simple-
 
 ## How to start:
 
-Must have: Docker and Docker-compose.
+#### Must have: Docker and Docker-compose.
 
 
 1. cd fastapi-crud-mysql/infrastructure
 2. docker-compose up -d
 
-Wait until all libs are installed.
+#### Wait until all libs are installed.
 
 Then you can access:
 1. PhpMyAdmin: Port 8088;
@@ -23,8 +23,19 @@ Then you can access:
 The API docs you can access with:
 localhost:8000/docs
 
-### Credentials:
+#### Credentials:
 
 1. [PhpMyAdmin] 	 root - 123123
 2. [MySQL]			 root - 123123
 3. [FastAPI/Swagger] brunow - superTest
+
+#### How to know if we're done
+docker logs fastapi-poc-python3-app
+
+This output should be like this:
+
+![image](https://user-images.githubusercontent.com/87096896/156464775-ba28ad45-8f3c-463a-aa31-cfdc68146fc9.png)
+
+
+Remember: Port 8000 isnt be able to access until the container stop to process the initial installations.
+After it we could use.
